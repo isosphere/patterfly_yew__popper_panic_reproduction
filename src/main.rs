@@ -1,29 +1,14 @@
-#![recursion_limit = "1024"]
-
 use browser_panic_hook::{CustomBody, IntoPanicHook};
 use wasm_bindgen::prelude::*;
 use patternfly_yew::prelude::*;
 use yew::prelude::*;
 
-#[hook]
-pub fn use_open<IN>(url: impl Into<String>, target: impl Into<String>) -> Callback<IN, ()>
-where
-    IN: 'static,
-{
-    use_callback((url.into(), target.into()), |_, (url, target)| {
-        let _ = gloo_utils::window().open_with_url_and_target(url, target);
-    })
-}
-
 // this does not reproduce the problem :/
 #[function_component(Reproduction)]
 fn dropdown() -> Html {
-    let toaster = use_toaster().unwrap();
-    let show_toast = use_callback(toaster, |text, toaster| toaster.toast(text));
-
     html!{
         <Dropdown text={html!{"Foo"}}>
-            <MenuAction onclick={show_toast.reform(|_|"Clicked Foo")}>{"Foo"}</MenuAction>
+            <MenuAction>{"Foo"}</MenuAction>
         </Dropdown>        
     }
 }
@@ -32,16 +17,14 @@ fn dropdown() -> Html {
 fn app() -> Html {
     html! {
         <BackdropViewer>
-            <ToastViewer>
-                <Reproduction />
-            </ToastViewer>
+            <Reproduction />
         </BackdropViewer>
     }
 }
 
 fn main() -> Result<(), JsValue> {
-    wasm_logger::init(wasm_logger::Config::new(log::Level::Trace));
-    yew::set_custom_panic_hook(
+    wasm_logger::init(wasm_logger::Config::new(log::Level::Trace)); // removing this does fix the panic
+    yew::set_custom_panic_hook( // removing this does not fix the panic  
         CustomBody(Box::new(|details| {
             format!(
                 r#"

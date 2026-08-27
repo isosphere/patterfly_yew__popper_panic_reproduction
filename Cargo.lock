@@ -632,10 +632,8 @@ name = "patterfly_yew__popper_panic_reproduction"
 version = "0.1.0"
 dependencies = [
  "browser-panic-hook",
- "gloo-utils 0.3.0",
  "log",
  "patternfly-yew",
- "popper-rs",
  "wasm-bindgen",
  "wasm-logger",
  "yew",
