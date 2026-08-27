@@ -8,9 +8,6 @@ use yew_hooks::prelude::*;
 pub struct DropdownProperties {
     #[prop_or_default]
     pub children: ChildrenRenderer<MenuChildVariant>,
-
-    #[prop_or_default]
-    pub text: Option<Html>,
 }
 
 /// Dropdown menu component
@@ -59,40 +56,39 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
 
     let style = use_state_eq(|| state.styles.popper.clone());
 
-    let width_mods = {
-        let style = style.clone();
-        let inside_ref = inside_ref.clone();
-        let state = state.clone();
+    // let width_mods = {
+    //     let style = style.clone();
+    //     let inside_ref = inside_ref.clone();
+    //     let state = state.clone();
 
-        ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
-            move |_: popper_rs::sys::ModifierArguments| {
-                if let Some(_elem) = inside_ref.cast::<web_sys::HtmlElement>() {
-                    let new_style = state
-                        .styles
-                        .popper
-                        .extend_with("z-index", "9999")
-                        .extend_with("opacity", "1")
-                        .extend_with("transition", "opacity cubic-bezier(0.54, 1.5, 0.38, 1.11)");
+    //     ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
+    //         move |_: popper_rs::sys::ModifierArguments| {
+    //             if let Some(_elem) = inside_ref.cast::<web_sys::HtmlElement>() {
+    //                 let new_style = state
+    //                     .styles
+    //                     .popper
+    //                     .extend_with("z-index", "9999")
+    //                     .extend_with("opacity", "1")
+    //                     .extend_with("transition", "opacity cubic-bezier(0.54, 1.5, 0.38, 1.11)");
 
-                    style.set(new_style)
-                }
-            },
-        )))
-    };
+    //                 style.set(new_style)
+    //             }
+    //         },
+    //     )))
+    // };
 
-    let modifiers = Vec::from([Modifier::Custom {
-        name: "widthMods".into(),
-        phase: Some("beforeWrite".into()),
-        enabled: Some(true),
-        r#fn: Some(width_mods),
-    }]);
+    // let modifiers = Vec::from([Modifier::Custom {
+    //     name: "widthMods".into(),
+    //     phase: Some("beforeWrite".into()),
+    //     enabled: Some(true),
+    //     r#fn: Some(width_mods),
+    // }]);
 
     html!(
         <>
             <div style="display: inline" ref={inside_ref.clone()}>
                 <MenuToggle
                     r#ref={target_ref.clone()}
-                    text={props.text.clone()}
                     expanded={*expanded}
                     {ontoggle}
                 />
@@ -100,7 +96,7 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
                     visible={*expanded}
                     target={target_ref.clone()}
                     content={menu_ref.clone()}
-                    {modifiers}
+                    // {modifiers}
                     {onstatechange}
                 >
                     <ContextProvider<CloseMenuContext> {context}>

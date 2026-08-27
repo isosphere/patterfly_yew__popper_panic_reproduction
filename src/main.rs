@@ -9,7 +9,7 @@ mod dropdown;
 #[function_component(Reproduction)]
 fn dropdown() -> Html {
     html!{
-        <dropdown::Dropdown text={html!{"Foo"}}>
+        <dropdown::Dropdown>
             <MenuAction>{"Foo"}</MenuAction>
         </dropdown::Dropdown>        
     }
