@@ -1,0 +1,11 @@
+{
+  "name": "patternfly-yew-popper-panic",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+  },
+  "dependencies": {
+    "@patternfly/patternfly": "^6",
+    "@fortawesome/fontawesome-free": "^7"
+  }
+}
