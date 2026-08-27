@@ -11,26 +11,6 @@ pub struct DropdownProperties {
 
     #[prop_or_default]
     pub text: Option<Html>,
-    #[prop_or_default]
-    pub icon: Option<Html>,
-
-    #[prop_or_default]
-    pub aria_label: AttrValue,
-
-    #[prop_or_default]
-    pub disabled: bool,
-
-    #[prop_or_default]
-    pub full_height: bool,
-
-    #[prop_or_default]
-    pub full_width: bool,
-
-    #[prop_or_default]
-    pub variant: MenuToggleVariant,
-
-    #[prop_or_default]
-    pub position: Position,
 }
 
 /// Dropdown menu component
@@ -74,12 +54,6 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
     let state = use_state_eq(PopperState::default);
     let onstatechange = use_callback(state.clone(), |new_state, state| state.set(new_state));
 
-    let placement = match props.position {
-        Position::Left => Placement::BottomStart,
-        Position::Right => Placement::BottomEnd,
-        Position::Top => Placement::TopStart,
-    };
-
     let onclose = use_callback(expanded.clone(), |(), expanded| expanded.set(false));
     let context = CloseMenuContext::new(onclose);
 
@@ -89,22 +63,16 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
         let style = style.clone();
         let inside_ref = inside_ref.clone();
         let state = state.clone();
-        let full_width = props.full_width;
 
         ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
             move |_: popper_rs::sys::ModifierArguments| {
-                if let Some(elem) = inside_ref.cast::<web_sys::HtmlElement>() {
-                    let mut new_style = state
+                if let Some(_elem) = inside_ref.cast::<web_sys::HtmlElement>() {
+                    let new_style = state
                         .styles
                         .popper
                         .extend_with("z-index", "9999")
                         .extend_with("opacity", "1")
                         .extend_with("transition", "opacity cubic-bezier(0.54, 1.5, 0.38, 1.11)");
-
-                    if full_width {
-                        new_style =
-                            new_style.extend_with("width", format!("{}px", elem.offset_width()));
-                    }
 
                     style.set(new_style)
                 }
@@ -125,12 +93,6 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
                 <MenuToggle
                     r#ref={target_ref.clone()}
                     text={props.text.clone()}
-                    icon={props.icon.clone()}
-                    disabled={props.disabled}
-                    full_height={props.full_height}
-                    full_width={props.full_width}
-                    aria_label={&props.aria_label}
-                    variant={props.variant}
                     expanded={*expanded}
                     {ontoggle}
                 />
@@ -138,7 +100,6 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
                     visible={*expanded}
                     target={target_ref.clone()}
                     content={menu_ref.clone()}
-                    {placement}
                     {modifiers}
                     {onstatechange}
                 >
