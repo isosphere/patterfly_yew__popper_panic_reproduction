@@ -15,84 +15,6 @@ where
     })
 }
 
-
-#[derive(Clone, Debug, PartialEq, Properties)]
-pub struct PageProps {
-    pub children: Children,
-}
-
-#[function_component(AppPage)]
-fn page(props: &PageProps) -> Html {
-    let callback_github = use_open(
-        "https://github.com/patternfly-yew/patternfly-yew-quickstart",
-        "_blank",
-    );
-
-    let backdropper = use_backdrop();
-
-    let onabout = use_callback((), move |_, ()| {
-        if let Some(backdropper) = &backdropper {
-            ()
-        }
-    });
-
-    // // track dark mode state
-    // let darkmode = use_state_eq(|| {
-    //     gloo_utils::window()
-    //         .match_media("(prefers-color-scheme: dark)")
-    //         .ok()
-    //         .flatten()
-    //         .map(|m| m.matches())
-    //         .unwrap_or_default()
-    // });
-    let darkmode = use_state(|| true);
-
-    // apply dark mode
-    // use_effect_with(*darkmode, |state| match state {
-    //     true => gloo_utils::document_element().set_class_name("pf-v6-theme-dark"),
-    //     false => gloo_utils::document_element().set_class_name(""),
-    // });
-
-    // toggle dark mode
-    let onthemeswitch = use_callback(darkmode.setter(), |state, setter| setter.set(state));
-
-    let tools = html!(
-        <Toolbar full_height=true>
-            <ToolbarContent>
-                <ToolbarGroup
-                    modifiers={ToolbarElementModifier::End.all()}
-                    variant={GroupVariant::IconButton}
-                >
-                    <ToolbarItem>
-                        <patternfly_yew::prelude::Switch
-                            checked={*darkmode}
-                            onchange={onthemeswitch}
-                            label="Dark Theme"
-                        />
-                    </ToolbarItem>
-                    <ToolbarItem>
-                        <Button
-                            variant={ButtonVariant::Plain}
-                            onclick={callback_github}
-                        />
-                    </ToolbarItem>
-                    <ToolbarItem>
-                        <Dropdown
-                            position={Position::Right}
-                            icon={Icon::QuestionCircle}
-                            variant={MenuToggleVariant::Plain}
-                        >
-                            <MenuAction onclick={onabout}>{ "About" }</MenuAction>
-                        </Dropdown>
-                    </ToolbarItem>
-                </ToolbarGroup>
-            </ToolbarContent>
-        </Toolbar>
-    );
-
-    html! (<Page {tools} full_height=true>{ for props.children.iter() }</Page>)
-}
-
 // this does not reproduce the problem :/
 #[function_component(Reproduction)]
 fn dropdown() -> Html {
@@ -102,10 +24,6 @@ fn dropdown() -> Html {
     html!{
         <Dropdown text={html!{"Foo"}}>
             <MenuAction onclick={show_toast.reform(|_|"Clicked Foo")}>{"Foo"}</MenuAction>
-            <ListDivider/>
-            <MenuAction icon={Icon::Cubes} onclick={show_toast.reform(|_|"Clicked Bar")}>{"Bar"}</MenuAction>
-            <ListDivider/>
-            <MenuLink href="https://patternfly.org" target="_blank">{"PatternFly "} {Icon::ExternalLinkAlt}</MenuLink>
         </Dropdown>        
     }
 }
