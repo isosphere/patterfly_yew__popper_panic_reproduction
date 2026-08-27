@@ -634,9 +634,12 @@ dependencies = [
  "browser-panic-hook",
  "log",
  "patternfly-yew",
+ "popper-rs",
  "wasm-bindgen",
  "wasm-logger",
+ "web-sys",
  "yew",
+ "yew-hooks",
 ]
 
 [[package]]

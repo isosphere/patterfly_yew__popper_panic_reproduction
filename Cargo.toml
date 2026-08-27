@@ -10,3 +10,20 @@ patternfly-yew = { version = "0.8.0" }
 wasm-bindgen = "0.2"
 wasm-logger = "0.2"
 yew = { version = "0.23", features = ["csr"] }
+popper-rs = { version = "0.5.0", features = ["yew", "debug"] }
+yew-hooks = "0.6.4"
+web-sys = { version = "0.3.66", features = [
+    "HtmlCollection",
+    "Node",
+    "NodeList",
+    "DomRect",
+    "DomTokenList",
+    "HtmlFormElement",
+    "HtmlSelectElement",
+    "HtmlOptionElement",
+    "HtmlOptionsCollection",
+    "KeyboardEvent",
+    "Touch",
+    "TouchEvent",
+    "TouchList",
+] }

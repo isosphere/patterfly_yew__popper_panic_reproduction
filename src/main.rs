@@ -3,22 +3,22 @@ use wasm_bindgen::prelude::*;
 use patternfly_yew::prelude::*;
 use yew::prelude::*;
 
+mod dropdown;
+
 // this does not reproduce the problem :/
 #[function_component(Reproduction)]
 fn dropdown() -> Html {
     html!{
-        <Dropdown text={html!{"Foo"}}>
+        <dropdown::Dropdown text={html!{"Foo"}}>
             <MenuAction>{"Foo"}</MenuAction>
-        </Dropdown>        
+        </dropdown::Dropdown>        
     }
 }
 
 #[function_component(Application)]
 fn app() -> Html {
     html! {
-        <BackdropViewer>
-            <Reproduction />
-        </BackdropViewer>
+        <Reproduction />
     }
 }
 
