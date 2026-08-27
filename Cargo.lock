@@ -635,6 +635,7 @@ dependencies = [
  "log",
  "patternfly-yew",
  "popper-rs",
+ "popper-rs-sys",
  "wasm-bindgen",
  "wasm-logger",
  "web-sys",

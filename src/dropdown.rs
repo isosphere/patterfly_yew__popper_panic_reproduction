@@ -1,8 +1,10 @@
 use patternfly_yew::prelude::*;
+use popper_rs_sys::ModifierArguments;
 use popper_rs::prelude::{State as PopperState, *};
 use wasm_bindgen::JsCast;
-use yew::{html::ChildrenRenderer, prelude::*};
+use wasm_bindgen::prelude::*;
 use yew_hooks::prelude::*;
+use yew::{html::ChildrenRenderer, prelude::*};
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct DropdownProperties {
@@ -55,34 +57,40 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
     let context = CloseMenuContext::new(onclose);
 
     let style = use_state_eq(|| state.styles.popper.clone());
+    
+    let width_mods = use_memo((), |()| {
+        let style = style.clone();
+        let inside_ref = inside_ref.clone();
+        let state = state.clone();        
 
-    // let width_mods = {
-    //     let style = style.clone();
-    //     let inside_ref = inside_ref.clone();
-    //     let state = state.clone();
+        Closure::wrap(
+            Box::new(
+                move |args: ModifierArguments| {
+                    let s = args.instance().state();
+                    if let Some(_elem) = inside_ref.cast::<web_sys::HtmlElement>() {
+                        let new_style = state
+                            .styles
+                            .popper
+                            .extend_with("z-index", "9999")
+                            .extend_with("opacity", "1")
+                            .extend_with("transition", "opacity cubic-bezier(0.54, 1.5, 0.38, 1.11)");
 
-    //     ModifierFn(std::rc::Rc::new(wasm_bindgen::prelude::Closure::new(
-    //         move |_: popper_rs::sys::ModifierArguments| {
-    //             if let Some(_elem) = inside_ref.cast::<web_sys::HtmlElement>() {
-    //                 let new_style = state
-    //                     .styles
-    //                     .popper
-    //                     .extend_with("z-index", "9999")
-    //                     .extend_with("opacity", "1")
-    //                     .extend_with("transition", "opacity cubic-bezier(0.54, 1.5, 0.38, 1.11)");
+                        style.set(new_style)
+                    }
+                    state.set(s.into());
+                }
+            ) as Box<dyn Fn(ModifierArguments)>
+        )
+    });
 
-    //                 style.set(new_style)
-    //             }
-    //         },
-    //     )))
-    // };
-
-    // let modifiers = Vec::from([Modifier::Custom {
-    //     name: "widthMods".into(),
-    //     phase: Some("beforeWrite".into()),
-    //     enabled: Some(true),
-    //     r#fn: Some(width_mods),
-    // }]);
+    let modifiers= {
+        Vec::from([Modifier::Custom { 
+            name: "widthMods".into(), 
+            phase: Some("beforeWrite".into()), 
+            enabled: Some(true), 
+            r#fn: Some(ModifierFn(width_mods)), 
+        }])
+    };    
 
     html!(
         <>
@@ -96,7 +104,7 @@ pub fn Dropdown(props: &DropdownProperties) -> Html {
                     visible={*expanded}
                     target={target_ref.clone()}
                     content={menu_ref.clone()}
-                    // {modifiers}
+                    modifiers={modifiers}
                     {onstatechange}
                 >
                     <ContextProvider<CloseMenuContext> {context}>

@@ -27,3 +27,4 @@ web-sys = { version = "0.3.66", features = [
     "TouchEvent",
     "TouchList",
 ] }
+popper-rs-sys = "0.5.0"
